@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import org.math.plot.Plot2DPanel;
 
-public class CountStepsBlank {
+public class CountSteps {
 
 	public static double calculateMagnitude(double x, double y, double z) {
 		return Math.pow(x*x + y*y + z*z, 0.5);

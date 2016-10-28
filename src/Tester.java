@@ -17,7 +17,7 @@ public class Tester {
 		double[] time = ArrayHelper.extractColumn(sampleData, 0);
 		double[][] accelerationData = ArrayHelper.extractColumns(sampleData, new int[] { 4, 5, 6 });
 
-		double[] accelerationMagnitudes = CountStepsBlank.calculateMagnitudesFor(accelerationData);
+		double[] accelerationMagnitudes = CountSteps.calculateMagnitudesFor(accelerationData);
 
 		double[][] displayData = ArrayHelper.combineAsColumns(time, accelerationMagnitudes);
 		
