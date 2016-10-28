@@ -23,9 +23,9 @@ public class BasicPlotting {
 		double[][] accel = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
 		double[] mags = CountSteps.calculateMagnitudesFor(accel);
 		
-		System.out.println(CountSteps.calculateMean(mags));
-		System.out.println(CountSteps.calculateStandardDeviation(mags, CountSteps.calculateMean(mags)));
-		System.out.println(CountSteps.calculateThreshold(mags, CountSteps.calculateMean(mags)));
+		System.out.println("Mean: " + CountSteps.calculateMean(mags));
+		System.out.println("Deviation: " + CountSteps.calculateStandardDeviation(mags, CountSteps.calculateMean(mags)));
+		System.out.println("Threshold: " + CountSteps.calculateThreshold(mags, CountSteps.calculateMean(mags)));
 		
 		Plot2DPanel plot = new Plot2DPanel();
 		
