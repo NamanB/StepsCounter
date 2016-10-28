@@ -5,7 +5,7 @@ import org.math.plot.Plot2DPanel;
 
 public class BasicPlotting {
 	public static double[][] sampleData;
-	public static String datafile = "data/64StepsInPocketJogging-out.csv";
+	public static String datafile = "data/walkingSampleData-out.csv";
 	
 	public static void main(String[] args) {
 		// Create data set
@@ -18,14 +18,14 @@ public class BasicPlotting {
 		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3, 4, 5, 6 });
 		
 		int steps = CountStepsBlank.countSteps(time, sensorData);
-		System.out.println(steps);
+		System.out.println("Step count: " + steps);
 		
 		double[][] accel = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
 		double[] mags = CountStepsBlank.calculateMagnitudesFor(accel);
 		
 		System.out.println(CountStepsBlank.calculateMean(mags));
 		System.out.println(CountStepsBlank.calculateStandardDeviation(mags, CountStepsBlank.calculateMean(mags)));
-		
+		System.out.println(CountStepsBlank.calculateThreshold(mags, CountStepsBlank.calculateMean(mags)));
 		
 		Plot2DPanel plot = new Plot2DPanel();
 		
