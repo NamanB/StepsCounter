@@ -154,6 +154,22 @@ public class CountSteps {
 		}
 	}
 	
+	/***
+	 * Displays a table of peak times and peak magnitudes above a threshold
+	 * @param peaks an array of the peak locations
+	 * @param mags an array of the peak magnitudes
+	 * @param threshold the threshold value
+	 */
+	public static void displayAllPeaksWithThreshold(int[] peaks, double mags[], double threshold) {
+		System.out.println("Peak time\t\tMagnitude");
+		for (int i = 1; i < peaks.length; i++) {
+			if (peaks[i-1] == 1) { System.out.print("    " + i + "\t\t    " + mags[i-1]);
+				if (mags[i-1] > threshold) System.out.println("*");
+				else System.out.println();
+			}
+		}
+	}
+	
 	public static double calculateThreshold(double[] magnitudes, double mean) {
 		return (calculateStandardDeviation(magnitudes, mean) + mean);
 	}

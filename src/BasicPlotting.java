@@ -37,13 +37,13 @@ public class BasicPlotting {
 		System.out.println("Deviation: " + CountSteps.calculateStandardDeviation(mags, CountSteps.calculateMean(mags)));
 		System.out.println("Threshold: " + threshold);
 		
-		CountSteps.displayPeaksAboveTheshold(CountSteps.findPeaks(mags), mags, threshold);
+		CountSteps.displayAllPeaksWithThreshold(CountSteps.findPeaks(mags), mags, threshold);
 		
 		Plot2DPanel plot = new Plot2DPanel();
 		
 		// add a line plot to the PlotPanel
 		plot.addLinePlot("y = x + noise", mags);
-		plot.addLinePlot("means", means);
+		//plot.addLinePlot("means", means);
 		plot.addLinePlot("threshold", thresholds);
 		
 		// put the PlotPanel in a JFrame, as a JPanel
