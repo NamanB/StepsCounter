@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import org.math.plot.Plot2DPanel;
 
 public class CountSteps {
+	
+	private static final int DEADZONE_THRESHOLD = 2;
 
 	public static double calculateMagnitude(double x, double y, double z) {
 		return Math.pow(x*x + y*y + z*z, 0.5);
@@ -49,7 +51,7 @@ public class CountSteps {
 			if (magnitudes[i] > magnitudes[i-1] && magnitudes[i] > magnitudes[i+1]) {
 				peaks[i] = 1;
 			}
-		clearExtraPeaks(peaks, magnitudes, 2);
+		clearExtraPeaks(peaks, magnitudes, DEADZONE_THRESHOLD);
 		
 		return peaks; 
 	}
