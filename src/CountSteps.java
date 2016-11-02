@@ -164,5 +164,18 @@ public class CountSteps {
 		frame.setContentPane(plot);
 		frame.setVisible(true);
 	}
+	
+	public double[] sectionDataByHeight(double[]magnitudes){
+		double[]boundaries;
+		double sum = 0;
+		double mean = 0;
+		for(int i = 0; i < magnitudes.length; i++){
+			sum += magnitudes[i];
+			mean = sum/ (i+1);
+			
+		}
+		return null;
+		
+	}
 
 }
