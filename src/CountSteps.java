@@ -42,22 +42,52 @@ public class CountSteps {
 	 * @param magnitudes the magnitudes of the data
 	 * @return a double array with values of 1 where there are peaks, and 0 otherwise
 	 */
-	public static double[] findPeaks(double[] magnitudes) {
-		double[] output = new double[magnitudes.length];
+	public static int[] findPeaks(double[] magnitudes) {
+		int[] peaks = new int[magnitudes.length];
 		
 		for (int i = 1; i < magnitudes.length-1; i++) 
-			if (magnitudes[i] > magnitudes[i-1] && magnitudes[i] > magnitudes[i+1])
-				output[i] = 1;
+			if (magnitudes[i] > magnitudes[i-1] && magnitudes[i] > magnitudes[i+1]) {
+				peaks[i] = 1;
+			}
+		clearExtraPeaks(peaks, magnitudes, 2);
 		
-		return output; 
+		return peaks; 
 	}
 	
+	public static void clearExtraPeaks(int[] peaks, double[] magnitudes, int deadzone) {
+		for (int i = 0; i < peaks.length; i++) {
+			if (peaks[i] == 1) checkDeadzoneForTallestPeak(peaks, i, deadzone, magnitudes); 
+		}
+	}
+
+	
+	public static void checkDeadzoneForTallestPeak(int[] peaks, int index, int deadzone, double[] magnitudes) {
+		int startIndex = index - deadzone, endIndex = index + deadzone;
+		double currentMag = magnitudes[index];
+		
+		if (startIndex < 0) startIndex = 0;
+		if (endIndex >= peaks.length) endIndex = peaks.length-1;
+	
+		while (index + deadzone > peaks.length-1) 
+			deadzone--;
+		
+		for (int i = startIndex; i < endIndex; i++) {
+			if (i != index && peaks[i] == 1) {
+				if (magnitudes[i] > currentMag) peaks[index] = 0;
+				else peaks[i] = 0;
+				break;
+			}
+		}
+		
+	}
+
 	/***
 	 * Counts the number of steps based on sensor data.
 	 * 
 	 * @param times a 1d-array with the elapsed times in milliseconds for each row in the sensorData array.
 	 * @param sensorData a 2d-array where rows represent successive sensor data samples, and the columns 
-	 * represent different sensors. We assume there are 6 columns.Columns 0-2 are data from the x, y, and z axes of an accelerometer, and 3-5 are data from the x,y,z axes
+	 * represent different sensors. We assume there are 6 columns.Columns 0-2 are data from the x, y, and
+	 *  z axes of an accelerometer, and 3-5 are data from the x,y,z axes
 	 * of a gyro.
 	 * @return an int representing the number of steps
 	 */
@@ -65,7 +95,7 @@ public class CountSteps {
 		int stepCount = 0; 
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
 		double mean = calculateMean(magnitudes);
-		double[]peaks = findPeaks(magnitudes);
+		int[] peaks = findPeaks(magnitudes);
 		double threshold = calculateThreshold(magnitudes, mean);
 		
 		for (int i = 0; i < magnitudes.length; i++) {
@@ -75,8 +105,20 @@ public class CountSteps {
 		return stepCount;
 	}
 	
+	public static void displayPeaks(int[] peaks, double[] times, double[] mags) {
+		for (int i = 0; i < peaks.length; i++) {
+			if (peaks[i] == 1) System.out.println("Peak at time: " + times[i] + ", magnitude: " + mags[i]);
+		}
+	}
+	
+	public static void displayPeaks(int[] peaks, double mags[]) {
+		for (int i = 1; i < peaks.length; i++) {
+			if (peaks[i-1] == 1) System.out.println("Peak at time: " + i + ", magnitude: " + mags[i-1]);
+		}
+	}
+	
 	public static double calculateThreshold(double[] magnitudes, double mean) {
-		return (calculateStandardDeviation(magnitudes, mean) * 1.25 + mean);
+		return (calculateStandardDeviation(magnitudes, mean) + mean);
 	}
 
 	public static void displayJFrame(Plot2DPanel plot) {

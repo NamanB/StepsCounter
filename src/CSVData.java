@@ -604,4 +604,15 @@ public class CSVData {
 		
 		a.columnNames[0] = "Elapsed Time";
 	}
+	
+	/***
+	 * Corrects the time to elapsed time
+	 * @param a a CSV Data object
+	 */
+	public static void correctTime(double[] time) {
+		double startTime = time[0];
+		
+		for (int i = 0; i < time.length; i++)
+			time[i] -= startTime;
+	}
 }
