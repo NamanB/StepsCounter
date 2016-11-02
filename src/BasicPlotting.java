@@ -23,6 +23,7 @@ public class BasicPlotting {
 		double[][] accel = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
 		double[] mags = CountSteps.calculateMagnitudesFor(accel);
 		
+		
 		double mean = CountSteps.calculateMean(mags);
 		double[] means = new double[mags.length];
 		
