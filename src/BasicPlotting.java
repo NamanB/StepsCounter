@@ -23,22 +23,28 @@ public class BasicPlotting {
 		double[][] accel = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
 		double[] mags = CountSteps.calculateMagnitudesFor(accel);
 		
+		double mean = CountSteps.calculateMean(mags);
 		double[] means = new double[mags.length];
 		
 		for (int i = 0; i < means.length; i++) 
-			means[i] = 9.8;
+			means[i] = mean;
 		
-		System.out.println("Mean: " + CountSteps.calculateMean(mags));
+		double threshold = CountSteps.calculateThreshold(mags, CountSteps.calculateMean(mags));
+		double[] thresholds = new double[mags.length];
+		for (int i = 0; i < thresholds.length; i++) thresholds[i] = threshold;
+		
+		System.out.println("Mean: " + mean);
 		System.out.println("Deviation: " + CountSteps.calculateStandardDeviation(mags, CountSteps.calculateMean(mags)));
-		System.out.println("Threshold: " + CountSteps.calculateThreshold(mags, CountSteps.calculateMean(mags)));
+		System.out.println("Threshold: " + threshold);
 		
-		CountSteps.displayPeaks(CountSteps.findPeaks(mags), mags);
+		CountSteps.displayPeaksAboveTheshold(CountSteps.findPeaks(mags), mags, threshold);
 		
 		Plot2DPanel plot = new Plot2DPanel();
 		
 		// add a line plot to the PlotPanel
 		plot.addLinePlot("y = x + noise", mags);
 		plot.addLinePlot("means", means);
+		plot.addLinePlot("threshold", thresholds);
 		
 		// put the PlotPanel in a JFrame, as a JPanel
 		JFrame frame = new JFrame("Results");

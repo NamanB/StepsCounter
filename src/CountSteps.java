@@ -54,22 +54,32 @@ public class CountSteps {
 		return peaks; 
 	}
 	
+	/***
+	 * Clears extra peaks
+	 * @param peaks the peak locations
+	 * @param magnitudes the magnitudes of the peaks
+	 * @param deadzone the absolute value range of values to check
+	 */
 	public static void clearExtraPeaks(int[] peaks, double[] magnitudes, int deadzone) {
 		for (int i = 0; i < peaks.length; i++) {
 			if (peaks[i] == 1) checkDeadzoneForTallestPeak(peaks, i, deadzone, magnitudes); 
 		}
 	}
 
-	
+	/***
+	 * Removes extra peaks that are in very close vicinity
+	 * @param peaks an array containing the peak locations
+	 * @param index the index to search values around
+	 * @param deadzone the number of values in front of the index to search (also searches deadzone 
+	 * number of values behind it)
+	 * @param magnitudes the magnitudes for the peaks
+	 */
 	public static void checkDeadzoneForTallestPeak(int[] peaks, int index, int deadzone, double[] magnitudes) {
 		int startIndex = index - deadzone, endIndex = index + deadzone;
 		double currentMag = magnitudes[index];
 		
 		if (startIndex < 0) startIndex = 0;
 		if (endIndex >= peaks.length) endIndex = peaks.length-1;
-	
-		while (index + deadzone > peaks.length-1) 
-			deadzone--;
 		
 		for (int i = startIndex; i < endIndex; i++) {
 			if (i != index && peaks[i] == 1) {
@@ -78,7 +88,6 @@ public class CountSteps {
 				break;
 			}
 		}
-		
 	}
 
 	/***
@@ -105,15 +114,41 @@ public class CountSteps {
 		return stepCount;
 	}
 	
+	/***
+	 * Displays a table of the peak times and peak magnitude values
+	 * @param peaks the array of peak locations
+	 * @param times the array of the times
+	 * @param mags the array of the peak magnitudes
+	 */
 	public static void displayPeaks(int[] peaks, double[] times, double[] mags) {
-		for (int i = 0; i < peaks.length; i++) {
-			if (peaks[i] == 1) System.out.println("Peak at time: " + times[i] + ", magnitude: " + mags[i]);
+		System.out.println("Peak time\t\tMagnitude");
+		for (int i = 1; i < peaks.length; i++) {
+			if (peaks[i-1] == 1) System.out.println("    " + times[i-1] + "\t\t    " + mags[i-1]);
 		}
 	}
 	
+	/***
+	 * Displays a table of the peak times and peak magnitude values
+	 * @param peaks an array of the peak locations
+	 * @param mags an array of the peak magnitudes
+	 */
 	public static void displayPeaks(int[] peaks, double mags[]) {
+		System.out.println("Peak time\t\tMagnitude");
 		for (int i = 1; i < peaks.length; i++) {
-			if (peaks[i-1] == 1) System.out.println("Peak at time: " + i + ", magnitude: " + mags[i-1]);
+			if (peaks[i-1] == 1) System.out.println("    " + i + "\t\t    " + mags[i-1]);
+		}
+	}
+	
+	/***
+	 * Displays a table of peak times and peak magnitudes above a threshold
+	 * @param peaks an array of the peak locations
+	 * @param mags an array of the peak magnitudes
+	 * @param threshold the threshold value
+	 */
+	public static void displayPeaksAboveTheshold(int[] peaks, double mags[], double threshold) {
+		System.out.println("Peak time\t\tMagnitude");
+		for (int i = 1; i < peaks.length; i++) {
+			if (peaks[i-1] == 1 && mags[i-1] > threshold) System.out.println("    " + i + "\t\t    " + mags[i-1]);
 		}
 	}
 	
