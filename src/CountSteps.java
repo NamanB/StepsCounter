@@ -13,10 +13,51 @@ public class CountSteps {
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
 		int[] peaks = findPeaks(magnitudes);
 		System.out.println(Arrays.toString(sectionDataByHeight(magnitudes, peaks, calculateMean(magnitudes) * 2)));
+	
 	}
 
 	private static final int DEADZONE_THRESHOLD = 2;
 
+	/***
+	 * Counts the number of steps based on sensor data.
+	 * 
+	 * @param times
+	 *            a 1d-array with the elapsed times in milliseconds for each row
+	 *            in the sensorData array.
+	 * @param sensorData
+	 *            a 2d-array where rows represent successive sensor data
+	 *            samples, and the columns represent different sensors. We
+	 *            assume there are 6 columns.Columns 0-2 are data from the x, y,
+	 *            and z axes of an accelerometer, and 3-5 are data from the
+	 *            x,y,z axes of a gyro.
+	 * @return an int representing the number of steps
+	 */
+	public static int countSteps(double[] times, double[][] sensorData) {
+		int stepCount = 0;
+		double[] magnitudes = calculateMagnitudesFor(sensorData);
+		int[] peaks = findPeaks(magnitudes);
+
+		for (int i = 0; i < magnitudes.length; i++) {
+			double[] magCluster = getMagnitudeCluster(magnitudes, 10, i);
+			double threshold = calculateThreshold(magCluster, calculateMean(magCluster));
+			
+			if (magnitudes[i] > threshold && peaks[i] == 1)
+				stepCount++;
+		}
+
+		return stepCount;
+	}
+	
+	public static double[] caluclateThresholds(double[]magnitudes){
+		double[] thresholds = new double[magnitudes.length];
+		
+		for (int i = 0; i < magnitudes.length; i++) {
+			double[] magCluster = getMagnitudeCluster(magnitudes, 10, i);
+			thresholds[i] = calculateThreshold(magCluster, calculateMean(magCluster));
+		}
+		return thresholds;
+	}
+	
 	public static double calculateMagnitude(double x, double y, double z) {
 		return Math.pow(x * x + y * y + z * z, 0.5);
 	}
@@ -119,36 +160,9 @@ public class CountSteps {
 		}
 	}
 
-	/***
-	 * Counts the number of steps based on sensor data.
-	 * 
-	 * @param times
-	 *            a 1d-array with the elapsed times in milliseconds for each row
-	 *            in the sensorData array.
-	 * @param sensorData
-	 *            a 2d-array where rows represent successive sensor data
-	 *            samples, and the columns represent different sensors. We
-	 *            assume there are 6 columns.Columns 0-2 are data from the x, y,
-	 *            and z axes of an accelerometer, and 3-5 are data from the
-	 *            x,y,z axes of a gyro.
-	 * @return an int representing the number of steps
-	 */
-	public static int countSteps(double[] times, double[][] sensorData) {
-		int stepCount = 0;
-		double[] magnitudes = calculateMagnitudesFor(sensorData);
-		double mean = calculateMean(magnitudes);
-		int[] peaks = findPeaks(magnitudes);
 
-		for (int i = 0; i < magnitudes.length; i++) {
-			double threshold = calculateThreshold(magnitudes, mean);
-			if (magnitudes[i] > threshold && peaks[i] == 1)
-				stepCount++;
-		}
 
-		return stepCount;
-	}
-
-	public double[] getMagnitudeCluster(double[] magnitudes, int range, int currentValue) {
+	public static double[] getMagnitudeCluster(double[] magnitudes, int range, int currentValue) {
 		int startIndex = range - currentValue;
 		int endIndex = range + currentValue;
 		int currentIndex = 0;
