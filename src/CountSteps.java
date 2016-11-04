@@ -16,6 +16,7 @@ public class CountSteps {
 	}
 
 	private static final int DEADZONE_THRESHOLD = 2;
+	private static final int ADAPTIVE_THRESHOLD_RANGE = 7;
 
 	/***
 	 * Counts the number of steps based on sensor data.
@@ -37,7 +38,7 @@ public class CountSteps {
 		int[] peaks = findPeaks(magnitudes);
 
 		for (int i = 0; i < magnitudes.length; i++) {
-			double[] magCluster = getMagnitudeCluster(magnitudes, 10, i);
+			double[] magCluster = getMagnitudeCluster(magnitudes, ADAPTIVE_THRESHOLD_RANGE, i);
 			double threshold = calculateThreshold(magCluster, calculateMean(magCluster));
 			
 			if (magnitudes[i] > threshold && peaks[i] == 1)
@@ -51,7 +52,7 @@ public class CountSteps {
 		double[] thresholds = new double[magnitudes.length];
 		
 		for (int i = 0; i < magnitudes.length; i++) {
-			double[] magCluster = getMagnitudeCluster(magnitudes, 10, i);
+			double[] magCluster = getMagnitudeCluster(magnitudes, ADAPTIVE_THRESHOLD_RANGE, i);
 			thresholds[i] = calculateThreshold(magCluster, calculateMean(magCluster));
 		}
 		return thresholds;

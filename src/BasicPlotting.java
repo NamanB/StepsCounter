@@ -5,7 +5,7 @@ import org.math.plot.Plot2DPanel;
 
 public class BasicPlotting {
 	public static double[][] sampleData;
-	public static String datafile = "data/walkingSampleData-out.csv";
+	public static String datafile = "data/64StepsInHandJogging-out.csv";
 	
 	public static void main(String[] args) {
 		// Create data set
