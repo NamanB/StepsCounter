@@ -12,7 +12,6 @@ public class CountSteps {
 		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
 		int[] peaks = findPeaks(magnitudes);
-		System.out.println(Arrays.toString(sectionDataByHeight(magnitudes, peaks, calculateMean(magnitudes) * 2)));
 	
 	}
 
@@ -48,7 +47,7 @@ public class CountSteps {
 		return stepCount;
 	}
 	
-	public static double[] caluclateThresholds(double[]magnitudes){
+	public static double[] calculateThresholds(double[]magnitudes){
 		double[] thresholds = new double[magnitudes.length];
 		
 		for (int i = 0; i < magnitudes.length; i++) {
@@ -252,6 +251,19 @@ public class CountSteps {
 			}
 		}
 	}
+	
+	public static void displayAllPeaksWithThreshold(int[] peaks, double mags[], double[] threshold) {
+		System.out.println("Peak time\t\tThresholds\t\tMagnitude");
+		for (int i = 1; i < peaks.length; i++) {
+			if (peaks[i - 1] == 1) {
+				System.out.print("    " + i + "\t\t    " + threshold[i] + "\t\t    " + mags[i - 1]);
+				if (mags[i - 1] > threshold[i])
+					System.out.println("*");
+				else
+					System.out.println();
+			}
+		}
+	}
 
 	public static double calculateThreshold(double[] magnitudes, double mean) {
 		return (calculateStandardDeviation(magnitudes, mean) + mean);
@@ -262,31 +274,6 @@ public class CountSteps {
 		frame.setSize(800, 600);
 		frame.setContentPane(plot);
 		frame.setVisible(true);
-	}
-
-	public static double[] sectionDataByHeight(double[] magnitudes, int[] peaks, double change) {
-		ArrayList<Integer> boundaries = new ArrayList<Integer>();
-		double sum = 0;
-		double mean = magnitudes[0];
-		int range = 3;
-
-		for (int i = 0; i < magnitudes.length; i++) {
-			for (int j = 0; j < range; j++) {
-				sum += magnitudes[i];
-				mean = sum / (i + 1);
-			}
-			if (peaks[i] == 1 && Math.abs(magnitudes[i] - mean) > change)
-				boundaries.add(i);
-			sum = 0;
-			mean = 0;
-		}
-
-		double[] output = new double[boundaries.size()];
-		for (int i = 0; i < output.length; i++) {
-			output[i] = boundaries.get(i);
-		}
-		return output;
-
 	}
 
 }
