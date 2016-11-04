@@ -17,7 +17,7 @@ public class BasicPlotting {
 		double[] time = ArrayHelper.extractColumn(sampleData, 0);		
 		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3, 4, 5, 6 });
 		
-		int steps = CountSteps.countSteps(time, sensorData);
+		int steps = CountSteps.countStepsByMagnitudes(sensorData);
 		System.out.println("Step count: " + steps);
 		
 		double[][] accel = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });

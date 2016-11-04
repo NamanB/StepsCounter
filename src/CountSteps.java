@@ -5,18 +5,18 @@ import javax.swing.JFrame;
 import org.math.plot.Plot2DPanel;
 
 public class CountSteps {
-	public static void main(String[] args) {
-		String datafile = "data/walkingSampleData-out.csv";
-		CSVData dataset = CSVData.createDataSet(datafile, 0);
-		double[][] sampleData = dataset.getAllData();
-		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
-		double[] magnitudes = calculateMagnitudesFor(sensorData);
-		int[] peaks = findPeaks(magnitudes);
-	
-	}
+//	public static void main(String[] args) {
+//		String datafile = "data/walkingSampleData-out.csv";
+//		CSVData dataset = CSVData.createDataSet(datafile, 0);
+//		double[][] sampleData = dataset.getAllData();
+//		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
+//		double[] magnitudes = calculateMagnitudesFor(sensorData);
+//		int[] peaks = findPeaks(magnitudes);
+//
+//	}
 
 	private static final int DEADZONE_THRESHOLD = 2;
-	private static final int ADAPTIVE_THRESHOLD_RANGE = 7;
+	private static final int ADAPTIVE_THRESHOLD_RANGE = 10;
 
 	/***
 	 * Counts the number of steps based on sensor data.
@@ -32,7 +32,7 @@ public class CountSteps {
 	 *            x,y,z axes of a gyro.
 	 * @return an int representing the number of steps
 	 */
-	public static int countSteps(double[] times, double[][] sensorData) {
+	public static int countStepsByMagnitudes(double[][] sensorData) {
 		int stepCount = 0;
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
 		int[] peaks = findPeaks(magnitudes);
@@ -40,24 +40,24 @@ public class CountSteps {
 		for (int i = 0; i < magnitudes.length; i++) {
 			double[] magCluster = getMagnitudeCluster(magnitudes, ADAPTIVE_THRESHOLD_RANGE, i);
 			double threshold = calculateThreshold(magCluster, calculateMean(magCluster));
-			
+
 			if (magnitudes[i] > threshold && peaks[i] == 1)
 				stepCount++;
 		}
 
 		return stepCount;
 	}
-	
-	public static double[] calculateThresholds(double[]magnitudes){
+
+	public static double[] calculateThresholds(double[] magnitudes) {
 		double[] thresholds = new double[magnitudes.length];
-		
+
 		for (int i = 0; i < magnitudes.length; i++) {
 			double[] magCluster = getMagnitudeCluster(magnitudes, ADAPTIVE_THRESHOLD_RANGE, i);
 			thresholds[i] = calculateThreshold(magCluster, calculateMean(magCluster));
 		}
 		return thresholds;
 	}
-	
+
 	public static double calculateMagnitude(double x, double y, double z) {
 		return Math.pow(x * x + y * y + z * z, 0.5);
 	}
@@ -110,6 +110,16 @@ public class CountSteps {
 		return peaks;
 	}
 
+	public static int[] findRawPeaks(double[] magnitudes) {
+		int[] peaks = new int[magnitudes.length];
+
+		for (int i = 1; i < magnitudes.length - 1; i++)
+			if (magnitudes[i] > magnitudes[i - 1] && magnitudes[i] > magnitudes[i + 1]) {
+				peaks[i] = 1;
+			}
+		return peaks;
+	}
+	
 	/***
 	 * Clears extra peaks
 	 * 
@@ -159,8 +169,6 @@ public class CountSteps {
 			}
 		}
 	}
-
-
 
 	public static double[] getMagnitudeCluster(double[] magnitudes, int range, int currentValue) {
 		int startIndex = range - currentValue;
@@ -252,7 +260,7 @@ public class CountSteps {
 			}
 		}
 	}
-	
+
 	public static void displayAllPeaksWithThreshold(int[] peaks, double mags[], double[] threshold) {
 		System.out.println("Peak time\t\tThresholds\t\tMagnitude");
 		for (int i = 1; i < peaks.length; i++) {
@@ -275,6 +283,34 @@ public class CountSteps {
 		frame.setSize(800, 600);
 		frame.setContentPane(plot);
 		frame.setVisible(true);
+	}
+
+	public static int countStepsByFrequencies(double[] time, double[][] sensorData) {
+		int stepCount = 0;
+		double[] magnitudes = calculateMagnitudesFor(sensorData);
+		int[] peaks = findRawPeaks(magnitudes);
+		int currentPeriodBetweenPeaks = -1;
+		int lastPeriodBetweenPeaks = -1;
+
+		for (int i = 0; i < peaks.length; i++) {
+			if (peaks[i] == 1) {
+				int nextPeak = getNextPeak(i, peaks);
+				currentPeriodBetweenPeaks = nextPeak - i;
+				if (currentPeriodBetweenPeaks == lastPeriodBetweenPeaks) stepCount++;
+				else lastPeriodBetweenPeaks = currentPeriodBetweenPeaks;
+			}
+		}
+		return stepCount;
+	}
+
+	public static int getNextPeak(int currentIndex, int[]peaks) {
+	
+		for (int j = currentIndex; j < peaks.length; j++) {
+			if(peaks[j] == 1){
+				return j;
+			}
+		}
+		return currentIndex;
 	}
 
 }
