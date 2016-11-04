@@ -1,9 +1,19 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 import org.math.plot.Plot2DPanel;
 
 public class CountSteps {
+	public static void main (String[]args){
+		String datafile = "data/walkingSampleData-out.csv";
+		CSVData dataset = CSVData.createDataSet(datafile, 0);
+		double[][]sampleData = dataset.getAllData();
+		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3});
+		double[] magnitudes = calculateMagnitudesFor(sensorData);
+		int[] peaks = findPeaks(magnitudes);
+		System.out.println(Arrays.toString(sectionDataByHeight(magnitudes, peaks ,calculateMean(magnitudes)*2)));
+	}
 
 	private static final int DEADZONE_THRESHOLD = 2;
 
@@ -128,14 +138,20 @@ public class CountSteps {
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
 		double mean = calculateMean(magnitudes);
 		int[] peaks = findPeaks(magnitudes);
-		double threshold = calculateThreshold(magnitudes, mean);
 
 		for (int i = 0; i < magnitudes.length; i++) {
+			double threshold = calculateThreshold(magnitudes, mean);
 			if (magnitudes[i] > threshold && peaks[i] == 1)
 				stepCount++;
 		}
 
 		return stepCount;
+	}
+	
+	public double[] getMagnitudeCluster(double[] magnitudes, int range, int currentValue){
+		int startIndex = range - currentValue;
+		int endIndex = range + currentValue;
+		return null;
 	}
 
 	/***
@@ -223,8 +239,10 @@ public class CountSteps {
 		frame.setContentPane(plot);
 		frame.setVisible(true);
 	}
+	
+	
 
-	public double[] sectionDataByHeight(double[] magnitudes, double change) {
+	public static double[] sectionDataByHeight(double[] magnitudes, int []peaks, double change) {
 		ArrayList<Integer> boundaries = new ArrayList<Integer>();
 		double sum = 0;
 		double mean = magnitudes[0];
@@ -235,7 +253,7 @@ public class CountSteps {
 				sum += magnitudes[i];
 				mean = sum / (i + 1);
 			}
-			if (Math.abs(magnitudes[i] - mean) > change)
+			if (peaks[i] == 1 && Math.abs(magnitudes[i] - mean) > change)
 				boundaries.add(i);
 			sum = 0;
 			mean = 0;
