@@ -5,14 +5,14 @@ import javax.swing.JFrame;
 import org.math.plot.Plot2DPanel;
 
 public class CountSteps {
-	public static void main (String[]args){
+	public static void main(String[] args) {
 		String datafile = "data/walkingSampleData-out.csv";
 		CSVData dataset = CSVData.createDataSet(datafile, 0);
-		double[][]sampleData = dataset.getAllData();
-		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3});
+		double[][] sampleData = dataset.getAllData();
+		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
 		int[] peaks = findPeaks(magnitudes);
-		System.out.println(Arrays.toString(sectionDataByHeight(magnitudes, peaks ,calculateMean(magnitudes)*2)));
+		System.out.println(Arrays.toString(sectionDataByHeight(magnitudes, peaks, calculateMean(magnitudes) * 2)));
 	}
 
 	private static final int DEADZONE_THRESHOLD = 2;
@@ -147,11 +147,21 @@ public class CountSteps {
 
 		return stepCount;
 	}
-	
-	public double[] getMagnitudeCluster(double[] magnitudes, int range, int currentValue){
+
+	public double[] getMagnitudeCluster(double[] magnitudes, int range, int currentValue) {
 		int startIndex = range - currentValue;
 		int endIndex = range + currentValue;
-		return null;
+		int currentIndex = 0;
+		if (startIndex < 0)
+			startIndex = 0;
+		if (endIndex >= magnitudes.length) {
+			endIndex = magnitudes.length - 1;
+		}
+		double[] output = new double[endIndex - startIndex];
+		for (int i = startIndex; i < endIndex; i++) {
+			output[currentIndex++] = magnitudes[i];
+		}
+		return output;
 	}
 
 	/***
@@ -239,10 +249,8 @@ public class CountSteps {
 		frame.setContentPane(plot);
 		frame.setVisible(true);
 	}
-	
-	
 
-	public static double[] sectionDataByHeight(double[] magnitudes, int []peaks, double change) {
+	public static double[] sectionDataByHeight(double[] magnitudes, int[] peaks, double change) {
 		ArrayList<Integer> boundaries = new ArrayList<Integer>();
 		double sum = 0;
 		double mean = magnitudes[0];
