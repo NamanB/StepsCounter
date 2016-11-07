@@ -1,0 +1,133 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504
+{\fonttbl\f0\fnil\fcharset0 Consolas;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;\csgray\c100000;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\li720\ri720\sl276\slmult1\partightenfactor0
+
+\f0\fs24 \cf0 - filename: 10stepForwardWalk.csv
+\f1 \
+
+\f0 - steps: 10
+\f1 \
+
+\f0 - phone_model: iPhone 5s
+\f1 \
+
+\f0 - subject_age: 16
+\f1 \
+
+\f0 - subject_gender: M
+\f1 \
+
+\f0 - gait: 
+\fs22 comfortable_walk
+\f1\fs24 \
+
+\f0 - phone_location: 
+\fs22 right_side_pocket	
+\f1\fs24 \
+
+\f0 - data_log_freq: 100
+\f1 \
+
+\f0 - collection_supervisor: Naman Bhargava\
+- date: 11/7/16\
+- scenario_type: ideal\
+\pard\pardeftab720\li720\ri720\sl276\slmult1\partightenfactor0
+\cf0 ***********************************
+\f1 \
+
+\f0 - filename: 6stepUpStairs.csv
+\f1 \
+
+\f0 - steps: 6
+\f1 \
+
+\f0 - phone_model: iPhone 5s
+\f1 \
+
+\f0 - subject_age: 16
+\f1 \
+
+\f0 - subject_gender: M
+\f1 \
+
+\f0 - gait: stairs
+\f1 \
+
+\f0 - phone_location: 
+\fs22 right_side_pocket
+\f1\fs24 \
+
+\f0 - data_log_freq: 100
+\f1 \
+
+\f0 - collection_supervisor: Naman Bhargava\
+- date: 11/7/16
+\f1 \
+\pard\pardeftab720\li720\ri720\sl276\slmult1\partightenfactor0
+
+\f0 \cf0 ***********************************
+\f1 \
+
+\f0 - filename: 6stepUpStairs.csv
+\f1 \
+
+\f0 - steps: 6
+\f1 \
+
+\f0 - phone_model: iPhone 5s
+\f1 \
+
+\f0 - subject_age: 16
+\f1 \
+
+\f0 - subject_gender: M
+\f1 \
+
+\f0 - gait: stairs
+\f1 \
+
+\f0 - phone_location: 
+\fs22 right_side_pocket
+\f1\fs24 \
+
+\f0 - data_log_freq: 100
+\f1 \
+
+\f0 - collection_supervisor: Naman Bhargava\
+- date: 11/7/16
+\f1 \
+
+\f0 ***********************************
+\f1 \
+
+\f0 - filename: 6stepDownStairs.csv
+\f1 \
+
+\f0 - steps: 6
+\f1 \
+
+\f0 - phone_model: iPhone 5s
+\f1 \
+
+\f0 - subject_age: 16
+\f1 \
+
+\f0 - subject_gender: M
+\f1 \
+
+\f0 - gait: stairs
+\f1 \
+
+\f0 - phone_location: 
+\fs22 right_side_pocket
+\f1\fs24 \
+
+\f0 - data_log_freq: 100
+\f1 \
+
+\f0 - collection_supervisor: Naman Bhargava\
+- date: 11/7/16}

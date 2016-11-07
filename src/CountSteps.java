@@ -15,8 +15,9 @@ public class CountSteps {
 //
 //	}
 
-	private static final int DEADZONE_THRESHOLD = 2;
-	private static final int ADAPTIVE_THRESHOLD_RANGE = 10;
+	private static final int DEADZONE_THRESHOLD = 50;
+	private static final int ADAPTIVE_THRESHOLD_RANGE = 20;
+	private static final int TIME_THRESHOLD = 150;
 
 	/***
 	 * Counts the number of steps based on sensor data.
@@ -32,27 +33,29 @@ public class CountSteps {
 	 *            x,y,z axes of a gyro.
 	 * @return an int representing the number of steps
 	 */
-	public static int countStepsByMagnitudes(double[][] sensorData) {
+	public static int countStepsByMagnitudes(double[][] sensorData, double[] times) {
 		int stepCount = 0;
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
-		int[] peaks = findPeaks(magnitudes);
+		int[] peaks = findPeaks(magnitudes, times);
+		int range = calculateRange(times);
 
 		for (int i = 0; i < magnitudes.length; i++) {
-			double[] magCluster = getMagnitudeCluster(magnitudes, ADAPTIVE_THRESHOLD_RANGE, i);
+			double[] magCluster = getMagnitudeCluster(magnitudes, range, i);
 			double threshold = calculateThreshold(magCluster, calculateMean(magCluster));
 
-			if (magnitudes[i] > threshold && peaks[i] == 1)
+			if (threshold > 0.5 && magnitudes[i] > threshold && peaks[i] == 1)
 				stepCount++;
 		}
 
 		return stepCount;
 	}
 
-	public static double[] calculateThresholds(double[] magnitudes) {
+	public static double[] calculateThresholds(double[] magnitudes, double[] times) {
 		double[] thresholds = new double[magnitudes.length];
+		int range = calculateRange(times);
 
 		for (int i = 0; i < magnitudes.length; i++) {
-			double[] magCluster = getMagnitudeCluster(magnitudes, ADAPTIVE_THRESHOLD_RANGE, i);
+			double[] magCluster = getMagnitudeCluster(magnitudes, range, i);
 			thresholds[i] = calculateThreshold(magCluster, calculateMean(magCluster));
 		}
 		return thresholds;
@@ -98,14 +101,14 @@ public class CountSteps {
 	 * @return a double array with values of 1 where there are peaks, and 0
 	 *         otherwise
 	 */
-	public static int[] findPeaks(double[] magnitudes) {
+	public static int[] findPeaks(double[] magnitudes, double[] times) {
 		int[] peaks = new int[magnitudes.length];
 
 		for (int i = 1; i < magnitudes.length - 1; i++)
 			if (magnitudes[i] > magnitudes[i - 1] && magnitudes[i] > magnitudes[i + 1]) {
 				peaks[i] = 1;
 			}
-		clearExtraPeaks(peaks, magnitudes, DEADZONE_THRESHOLD);
+		clearExtraPeaks(peaks, magnitudes, DEADZONE_THRESHOLD, times);
 
 		return peaks;
 	}
@@ -130,10 +133,12 @@ public class CountSteps {
 	 * @param deadzone
 	 *            the absolute value range of values to check
 	 */
-	public static void clearExtraPeaks(int[] peaks, double[] magnitudes, int deadzone) {
+	public static void clearExtraPeaks(int[] peaks, double[] magnitudes, int deadzone, double[] times) {
+		int range = calculateRange(times);
+		
 		for (int i = 0; i < peaks.length; i++) {
 			if (peaks[i] == 1)
-				checkDeadzoneForTallestPeak(peaks, i, deadzone, magnitudes);
+				checkDeadzoneForTallestPeak(peaks, i, range, magnitudes, times);
 		}
 	}
 
@@ -150,7 +155,7 @@ public class CountSteps {
 	 * @param magnitudes
 	 *            the magnitudes for the peaks
 	 */
-	public static void checkDeadzoneForTallestPeak(int[] peaks, int index, int deadzone, double[] magnitudes) {
+	public static void checkDeadzoneForTallestPeak(int[] peaks, int index, int deadzone, double[] magnitudes, double[] times) {
 		int startIndex = index - deadzone, endIndex = index + deadzone;
 		double currentMag = magnitudes[index];
 
@@ -168,6 +173,13 @@ public class CountSteps {
 				break;
 			}
 		}
+	}
+
+	private static int calculateRange(double[] times) {
+		int range = 0;
+		while (times[range] < TIME_THRESHOLD)
+			range++;
+		return range;
 	}
 
 	public static double[] getMagnitudeCluster(double[] magnitudes, int range, int currentValue) {

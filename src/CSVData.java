@@ -244,6 +244,8 @@ public class CSVData {
 			}
 		}
 		
+		this.correctTime();
+		
 		//re-orders the columns in the order of acceleration then gryo
 		for (int i = 1; i < 4; i++) 
 			swapColumns(i, i+3);
@@ -599,10 +601,29 @@ public class CSVData {
 	public static void correctTime(CSVData a) {
 		double startTime = a.data[0][0];
 		
-		for (int i = 0; i < a.data[0].length; i++)
+		System.out.println(a.data[0][0] - a.data[0][0] + "\n\n\n\n");
+		
+		for (int i = 0; i < a.data.length; i++)
 			a.data[i][0] -= startTime;
 		
 		a.columnNames[0] = "Elapsed Time";
+	}
+	
+	/***
+	 * Corrects the time to elapsed time
+	 * @param a a CSV Data object
+	 */
+	public void correctTime() {
+		double startTime = this.data[0][0];
+		
+		System.out.println(this.data[0][0] - this.data[0][0] + "\n\n\n\n");
+		
+		for (int i = 0; i < this.data.length; i++){
+			this.data[i][0] -= startTime;
+			this.data[i][0] *= 1000;
+		}
+			
+		this.columnNames[0] = "Elapsed Time";
 	}
 	
 	/***
