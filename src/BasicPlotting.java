@@ -5,7 +5,7 @@ import org.math.plot.Plot2DPanel;
 
 public class BasicPlotting {
 	public static double[][] sampleData;
-	public static String datafile = "data/11StepsDownStairs.csv";
+	public static String datafile = "data/walkingSampleData-out.csv";
 	
 	public static void main(String[] args) {
 		// Create data set
@@ -18,7 +18,9 @@ public class BasicPlotting {
 		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3, 4, 5, 6 });
 		
 		int steps = CountSteps.countStepsByMagnitudes(sensorData, time);
-		System.out.println("Step count: " + steps);
+		int originalSteps = CountSteps.countSteps(sensorData, time);
+		System.out.println("Fixed Step count: " + steps);
+		System.out.println("Original Step count: " + originalSteps);
 		
 		double[][] accel = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
 		double[] mags = CountSteps.calculateMagnitudesFor(accel);
