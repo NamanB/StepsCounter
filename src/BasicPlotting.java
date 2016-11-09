@@ -5,11 +5,7 @@ import org.math.plot.Plot2DPanel;
 
 public class BasicPlotting {
 	public static double[][] sampleData;
-<<<<<<< HEAD
-	public static String datafile = "data/15StepWalking.csv";
-=======
-	public static String datafile = "data/walkingSampleData-out.csv";
->>>>>>> fe6c7df034925d86fded42e24303b852e95e7a3a
+	public static String datafile = "data/11StepsUpStairs.csv";
 	
 	public static void main(String[] args) {
 		// Create data set
