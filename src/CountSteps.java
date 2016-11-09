@@ -28,13 +28,10 @@ public class CountSteps {
 		int stepCount = 0;
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
 		int[] peaks = findPeaks(magnitudes, times);
-		int range = calculateThresholdRange(times);
+		double[] thresholds = calculateThresholds(magnitudes, times);
 
 		for (int i = 0; i < magnitudes.length; i++) {
-			double[] magCluster = getMagnitudeCluster(magnitudes, range, i);
-			double threshold = calculateThreshold(magCluster, calculateMean(magCluster));
-
-			if (threshold > 0.5 && magnitudes[i] > threshold && peaks[i] == 1)
+			if (thresholds[i] > 0.5 && magnitudes[i] > thresholds[i] && peaks[i] == 1)
 				stepCount++;
 		}
 
@@ -219,12 +216,15 @@ public class CountSteps {
 		int startIndex = range - currentValue;
 		int endIndex = range + currentValue;
 		int currentIndex = 0;
-		if (startIndex < 0)
+		
+		if (startIndex < 0) {
+			endIndex -= startIndex;
 			startIndex = 0;
-		if (endIndex >= magnitudes.length) {
-			endIndex = magnitudes.length - 1;
 		}
+		if (endIndex >= magnitudes.length) endIndex = magnitudes.length - 1;
+		
 		double[] output = new double[endIndex - startIndex];
+		
 		for (int i = startIndex; i < endIndex; i++) {
 			output[currentIndex++] = magnitudes[i];
 		}
