@@ -40,6 +40,21 @@ public class CountSteps {
 
 		return stepCount;
 	}
+	
+	public static int countSteps(double[][] sensorData, double[] times) {
+		int stepCount = 0;
+		double[] magnitudes = calculateMagnitudesFor(sensorData);
+		int[] peaks = findPeaks(magnitudes, times);
+
+		for (int i = 0; i < magnitudes.length; i++) {
+			double threshold = calculateThreshold(magnitudes, calculateMean(magnitudes));
+
+			if (magnitudes[i] > threshold && peaks[i] == 1)
+				stepCount++;
+		}
+
+		return stepCount;
+	}
 
 	/***
 	 * calculates a threshold range using the time data
