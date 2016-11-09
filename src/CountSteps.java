@@ -5,16 +5,7 @@ import javax.swing.JFrame;
 import org.math.plot.Plot2DPanel;
 
 public class CountSteps {
-//	public static void main(String[] args) {
-//		String datafile = "data/walkingSampleData-out.csv";
-//		CSVData dataset = CSVData.createDataSet(datafile, 0);
-//		double[][] sampleData = dataset.getAllData();
-//		double[][] sensorData = ArrayHelper.extractColumns(sampleData, new int[] { 1, 2, 3 });
-//		double[] magnitudes = calculateMagnitudesFor(sensorData);
-//		int[] peaks = findPeaks(magnitudes);
-//
-//	}
-
+	
 	private static final int DEADZONE_THRESHOLD = 50;
 	private static final int ADAPTIVE_THRESHOLD_RANGE = 20;
 	private static final int TIME_THRESHOLD = 150;
@@ -50,6 +41,12 @@ public class CountSteps {
 		return stepCount;
 	}
 
+	/***
+	 * calculates a threshold range using the time data
+	 * 
+	 * @param times the times that each data point was collected
+	 * @return the number of values to use as a range
+	 */
 	private static int calculateThresholdRange(double[] times) {
 		int range = 0;
 		while (times[range] < ADAPTIVE_THRESHOLD_RANGE)
@@ -57,6 +54,14 @@ public class CountSteps {
 		return range;
 	}
 
+	/***
+	 * Calculates a threshold value for each magnitude with a new window and returns an
+	 * array containing all the values
+	 * 
+	 * @param magnitudes the magnitudes of the acceleration data
+	 * @param times the times from the data
+	 * @return an array with threshold values recalculated for each vale
+	 */
 	public static double[] calculateThresholds(double[] magnitudes, double[] times) {
 		double[] thresholds = new double[magnitudes.length];
 		int range = calculateThresholdRange(times);
@@ -101,12 +106,9 @@ public class CountSteps {
 	/***
 	 * Locates the peaks within the data
 	 * 
-	 * @param times
-	 *            the times of the data
-	 * @param magnitudes
-	 *            the magnitudes of the data
-	 * @return a double array with values of 1 where there are peaks, and 0
-	 *         otherwise
+	 * @param times the times of the data
+	 * @param magnitudes the magnitudes of the data
+	 * @return a double array with values of 1 where there are peaks, and 0 otherwise
 	 */
 	public static int[] findPeaks(double[] magnitudes, double[] times) {
 		int[] peaks = new int[magnitudes.length];
@@ -119,7 +121,12 @@ public class CountSteps {
 
 		return peaks;
 	}
-
+	
+	/***
+	 * finds all the peaks
+	 * @param magnitudes the array with the magnitude values from acceleration data
+	 * @return all the peak locations
+	 */
 	public static int[] findRawPeaks(double[] magnitudes) {
 		int[] peaks = new int[magnitudes.length];
 
@@ -133,12 +140,9 @@ public class CountSteps {
 	/***
 	 * Clears extra peaks
 	 * 
-	 * @param peaks
-	 *            the peak locations
-	 * @param magnitudes
-	 *            the magnitudes of the peaks
-	 * @param deadzone
-	 *            the absolute value range of values to check
+	 * @param peaks the peak locations
+	 * @param magnitudes the magnitudes of the peaks
+	 * @param deadzone the absolute value range of values to check
 	 */
 	public static void clearExtraPeaks(int[] peaks, double[] magnitudes, int deadzone, double[] times) {
 		int range = calculateTimeRange(times);
@@ -152,15 +156,10 @@ public class CountSteps {
 	/***
 	 * Removes extra peaks that are in very close vicinity
 	 * 
-	 * @param peaks
-	 *            an array containing the peak locations
-	 * @param index
-	 *            the index to search values around
-	 * @param deadzone
-	 *            the number of values in front of the index to search (also
-	 *            searches deadzone number of values behind it)
-	 * @param magnitudes
-	 *            the magnitudes for the peaks
+	 * @param peaks an array containing the peak locations
+	 * @param index the index to search values around
+	 * @param deadzone the number of values in front of the index to search (also searches deadzone number of values behind it)
+	 * @param magnitudes the magnitudes for the peaks
 	 */
 	public static void checkDeadzoneForTallestPeak(int[] peaks, int index, int deadzone, double[] magnitudes, double[] times) {
 		int startIndex = index - deadzone, endIndex = index + deadzone;
@@ -182,6 +181,11 @@ public class CountSteps {
 		}
 	}
 
+	/***
+	 * returns the range of times
+	 * @param times the times from the data
+	 * @return the integer value of the times to contain the range
+	 */
 	private static int calculateTimeRange(double[] times) {
 		int range = 0;
 		while (times[range] < TIME_THRESHOLD)
@@ -189,6 +193,13 @@ public class CountSteps {
 		return range;
 	}
 
+	/***
+	 * returns a small array of the current window of magnitudes to observe
+	 * @param magnitudes the array of the magnitudes of acceleration data
+	 * @param range the radius of values to look around the current value
+	 * @param currentValue the current value
+	 * @return a small array of the current window of magnitudes to observe
+	 */
 	public static double[] getMagnitudeCluster(double[] magnitudes, int range, int currentValue) {
 		int startIndex = range - currentValue;
 		int endIndex = range + currentValue;
@@ -208,12 +219,9 @@ public class CountSteps {
 	/***
 	 * Displays a table of the peak times and peak magnitude values
 	 * 
-	 * @param peaks
-	 *            the array of peak locations
-	 * @param times
-	 *            the array of the times
-	 * @param mags
-	 *            the array of the peak magnitudes
+	 * @param peaks the array of peak locations
+	 * @param times the array of the times
+	 * @param mags the array of the peak magnitudes
 	 */
 	public static void displayPeaks(int[] peaks, double[] times, double[] mags) {
 		System.out.println("Peak time\t\tMagnitude");
@@ -226,10 +234,8 @@ public class CountSteps {
 	/***
 	 * Displays a table of the peak times and peak magnitude values
 	 * 
-	 * @param peaks
-	 *            an array of the peak locations
-	 * @param mags
-	 *            an array of the peak magnitudes
+	 * @param peaks an array of the peak locations
+	 * @param mags an array of the peak magnitudes
 	 */
 	public static void displayPeaks(int[] peaks, double mags[]) {
 		System.out.println("Peak time\t\tMagnitude");
@@ -242,12 +248,9 @@ public class CountSteps {
 	/***
 	 * Displays a table of peak times and peak magnitudes above a threshold
 	 * 
-	 * @param peaks
-	 *            an array of the peak locations
-	 * @param mags
-	 *            an array of the peak magnitudes
-	 * @param threshold
-	 *            the threshold value
+	 * @param peaks an array of the peak locations
+	 * @param mags an array of the peak magnitudes
+	 * @param threshold the threshold value
 	 */
 	public static void displayPeaksAboveTheshold(int[] peaks, double mags[], double threshold) {
 		System.out.println("Peak time\t\tMagnitude");
@@ -260,12 +263,9 @@ public class CountSteps {
 	/***
 	 * Displays a table of peak times and peak magnitudes above a threshold
 	 * 
-	 * @param peaks
-	 *            an array of the peak locations
-	 * @param mags
-	 *            an array of the peak magnitudes
-	 * @param threshold
-	 *            the threshold value
+	 * @param peaks an array of the peak locations
+	 * @param mags an array of the peak magnitudes
+	 * @param threshold the threshold value
 	 */
 	public static void displayAllPeaksWithThreshold(int[] peaks, double mags[], double threshold) {
 		System.out.println("Peak time\t\tMagnitude");
@@ -280,6 +280,12 @@ public class CountSteps {
 		}
 	}
 
+	/***
+	 * Displays all the peaks that have are above the threshold
+	 * @param peaks the array with the peak locations
+	 * @param mags the array with the magnitudes of acceleration data
+	 * @param threshold the minimum value for peaks to be counted as steps
+	 */
 	public static void displayAllPeaksWithThreshold(int[] peaks, double mags[], double[] threshold) {
 		System.out.println("Peak time\t\tThresholds\t\tMagnitude");
 		for (int i = 1; i < peaks.length; i++) {
@@ -293,6 +299,12 @@ public class CountSteps {
 		}
 	}
 
+	/***
+	 * Calculates a threshold value 
+	 * @param magnitudes the array with the magnitudes of acceleration
+	 * @param mean the average of the data
+	 * @return the threshold value
+	 */
 	public static double calculateThreshold(double[] magnitudes, double mean) {
 		return (calculateStandardDeviation(magnitudes, mean) + mean);
 	}
@@ -304,6 +316,12 @@ public class CountSteps {
 		frame.setVisible(true);
 	}
 
+	/***
+	 * Count steps using frequencies
+	 * @param time the array containing the time
+	 * @param sensorData the data of the accelerations
+	 * @return the number of steps taken during the data
+	 */
 	public static int countStepsByFrequencies(double[] time, double[][] sensorData) {
 		int stepCount = 0;
 		double[] magnitudes = calculateMagnitudesFor(sensorData);
@@ -322,8 +340,13 @@ public class CountSteps {
 		return stepCount;
 	}
 
+	/***
+	 * Finds the next peak
+	 * @param currentIndex the current index of the peak
+	 * @param peaks the array with the locations of all the peaks
+	 * @return the index of the next peak
+	 */
 	public static int getNextPeak(int currentIndex, int[]peaks) {
-	
 		for (int j = currentIndex; j < peaks.length; j++) {
 			if(peaks[j] == 1){
 				return j;
