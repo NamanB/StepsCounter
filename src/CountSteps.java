@@ -177,10 +177,8 @@ public class CountSteps {
 		int startIndex = index - deadzone, endIndex = index + deadzone;
 		double currentMag = magnitudes[index];
 
-		if (startIndex < 0)
-			startIndex = 0;
-		if (endIndex >= peaks.length)
-			endIndex = peaks.length - 1;
+		if (startIndex < 0) startIndex = 0;
+		if (endIndex >= peaks.length) endIndex = peaks.length - 1;
 
 		for (int i = startIndex; i < endIndex; i++) {
 			if (i != index && peaks[i] == 1) {
