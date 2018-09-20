@@ -300,7 +300,7 @@ public class CountSteps {
 	 * @param threshold the minimum value for peaks to be counted as steps
 	 */
 	public static void displayAllPeaksWithThreshold(int[] peaks, double mags[], double[] threshold) {
-		System.out.println("Peak time\t\tThresholds\t\tMagnitude");
+		System.out.println("Peak time\t\tThresholds\t\t\tMagnitude");
 		for (int i = 1; i < peaks.length; i++) {
 			if (peaks[i - 1] == 1) {
 				System.out.print("    " + i + "\t\t    " + threshold[i] + "\t\t    " + mags[i - 1]);
